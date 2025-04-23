@@ -1,6 +1,6 @@
 import { afterNextRender, Component, viewChild, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { debounceTime } from 'rxjs';
+import { debounceTime, timeout } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -16,8 +16,19 @@ export class LoginComponent {
 
   constructor() {
     afterNextRender(() => {
+
+      const savedForm = localStorage.getItem('saved-login-form-details');
+
+      if (savedForm) {
+        const loadedFormData = JSON.parse(savedForm);
+        const loadedEmail = loadedFormData.email;
+        setTimeout(() => {
+          this.form()?.controls['email'].setValue(loadedEmail);
+        }, 1)
+      }
+
       this.form()?.valueChanges?.pipe(debounceTime(5000)).subscribe(
-        { next: (value) => localStorage.setItem('login-form-details', JSON.stringify({ 'email': value.email })) }
+        { next: (value) => localStorage.setItem('saved-login-form-details', JSON.stringify({ 'email': value.email })) }
       );
     })
   }
