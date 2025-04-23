@@ -16,9 +16,7 @@ export class LoginComponent {
 
   constructor() {
     afterNextRender(() => {
-
       const savedForm = localStorage.getItem('saved-login-form-details');
-
       if (savedForm) {
         const loadedFormData = JSON.parse(savedForm);
         const loadedEmail = loadedFormData.email;
