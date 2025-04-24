@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { of } from 'rxjs';
+import { debounceTime, of, Subscription } from 'rxjs';
 
 function mustBeCompanyEmailAddress(control: AbstractControl) {
   return control.value.includes('accenture') ? null : { notCompanyEmailAddress: true };
@@ -23,7 +23,10 @@ function shouldNotMatchPreviousPasswords(control: AbstractControl) {
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit, OnDestroy {
+
+
+  private subscriptions: Subscription[] = [];
 
   loginForm = new FormGroup({
     email: new FormControl('', {
@@ -35,6 +38,26 @@ export class LoginComponent {
       }
     )
   });
+
+  ngOnInit() {
+    const savedLoginForm = localStorage.getItem('saved-login-form');
+
+    if (savedLoginForm) {
+      this.loginForm.patchValue({
+        email: JSON.parse(savedLoginForm).email
+      })
+    }
+
+    this.loginForm.valueChanges.pipe(debounceTime(500)).subscribe({
+      next: value => localStorage.setItem('saved-login-form', JSON.stringify({ 'email': value.email }))
+    })
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    })
+  }
 
   get isEmailInvalid() {
     return (
