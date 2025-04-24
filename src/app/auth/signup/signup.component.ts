@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-signup',
@@ -13,8 +13,12 @@ export class SignupComponent {
 
 
   signupForm = new FormGroup({
-    email: new FormControl(''),
-    password: new FormControl('')
+    email: new FormControl('', {
+      validators: [Validators.email, Validators.required]
+    }),
+    password: new FormControl('', {
+      validators: [Validators.required, Validators.minLength(6)]
+    })
   })
   onSubmit() {
     console.log('Email and Password : ', this.signupForm.controls.email.value, this.signupForm.controls.password.value);
