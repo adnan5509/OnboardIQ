@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -11,10 +11,31 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 export class LoginComponent {
 
   loginForm = new FormGroup({
-    email: new FormControl(''),
-    password: new FormControl('')
+    email: new FormControl('', {
+      validators: [Validators.email, Validators.required]
+    }),
+    password: new FormControl('',
+      {
+        validators: [Validators.required, Validators.minLength(6)]
+      }
+    )
   });
 
+  get isEmailInvalid() {
+    return (
+      this.loginForm.controls.email.touched &&
+      this.loginForm.controls.email.dirty &&
+      this.loginForm.controls.email.invalid
+    )
+  }
+
+  get isPasswordInvalid() {
+    return (
+      this.loginForm.controls.password.touched &&
+      this.loginForm.controls.password.dirty &&
+      this.loginForm.controls.password.invalid
+    )
+  }
 
   onSubmit() {
     console.log(this.loginForm);
