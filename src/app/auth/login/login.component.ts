@@ -1,5 +1,9 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+
+function mustBeCompanyEmailAddress(control: AbstractControl) {
+  return control.value.includes('accenture') ? null : { notCompanyEmailAddress: true };
+}
 
 @Component({
   selector: 'app-login',
@@ -12,7 +16,7 @@ export class LoginComponent {
 
   loginForm = new FormGroup({
     email: new FormControl('', {
-      validators: [Validators.email, Validators.required]
+      validators: [Validators.email, Validators.required, mustBeCompanyEmailAddress]
     }),
     password: new FormControl('',
       {
