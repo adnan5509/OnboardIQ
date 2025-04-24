@@ -1,45 +1,47 @@
-import { Component } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { afterNextRender, Component, viewChild, ViewChild } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
+import { debounceTime, timeout } from 'rxjs';
+import { EmailValidatorDirective } from '../../email-validator.directive';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule],
   standalone: true,
+  imports: [FormsModule, EmailValidatorDirective],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
 export class LoginComponent {
 
-  loginForm = new FormGroup({
-    email: new FormControl('', {
-      validators: [Validators.email, Validators.required]
-    }),
-    password: new FormControl('',
-      {
-        validators: [Validators.required, Validators.minLength(6)]
+
+  private form = viewChild<NgForm>('form');
+
+  constructor() {
+    afterNextRender(() => {
+      const savedForm = localStorage.getItem('saved-login-form-details');
+      if (savedForm) {
+        const loadedFormData = JSON.parse(savedForm);
+        const loadedEmail = loadedFormData.email;
+        setTimeout(() => {
+          this.form()?.controls['email'].setValue(loadedEmail);
+        }, 1)
       }
-    )
-  });
 
-  get isEmailInvalid() {
-    return (
-      this.loginForm.controls.email.touched &&
-      this.loginForm.controls.email.dirty &&
-      this.loginForm.controls.email.invalid
-    )
+      this.form()?.valueChanges?.pipe(debounceTime(5000)).subscribe(
+        { next: (value) => localStorage.setItem('saved-login-form-details', JSON.stringify({ 'email': value.email })) }
+      );
+    })
   }
 
-  get isPasswordInvalid() {
-    return (
-      this.loginForm.controls.password.touched &&
-      this.loginForm.controls.password.dirty &&
-      this.loginForm.controls.password.invalid
-    )
-  }
+  onSubmit(formData: NgForm) {
 
-  onSubmit() {
-    console.log(this.loginForm);
-    console.log('Entered login Details ', this.loginForm.value.email, this.loginForm.value.password);
-  }
+    if (formData.form.invalid) {
+      return;
+    }
+    console.log("Entered Login Details");
+    console.log("Email", formData.form.value.email);
+    console.log("Password", formData.form.value.password);
+    console.log(formData);
 
+    formData.form.reset();
+  }
 }

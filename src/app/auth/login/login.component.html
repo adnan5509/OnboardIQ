@@ -1,24 +1,23 @@
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+<form #form="ngForm" (ngSubmit)="onSubmit(form)">
   <h2>Login</h2>
 
   <div class="control-row">
     <div class="control no-margin">
       <label for="email">Email</label>
-      <input id="email" type="email" formControlName="email" />
+      <input id="email" type="email" name="email" ngModel required email appEmailValidator #emailCtrl="ngModel" />
     </div>
 
     <div class="control no-margin">
       <label for="password">Password</label>
-      <input id="password" type="password" formControlName="password" />
+      <input id="password" type="password" name="password" ngModel required minlength="6" #passwordCtrl="ngModel" />
     </div>
 
     <button class="button">Login</button>
   </div>
-
-  @if(isEmailInvalid){
-  <p class="control-error">Please enter valid email address</p>
+  @if(emailCtrl.touched && emailCtrl.dirty && emailCtrl.invalid){
+  <p class="control-error">Invalid Email Address (Use Accenture Email Address)</p>
   }
-  @if(isPasswordInvalid){
-  <p class="control-error">Please enter valid password (Atleast 6 characters long)</p>
+  @if(passwordCtrl.touched && passwordCtrl.dirty && passwordCtrl.invalid){
+  <p class="control-error">Invalid Password - Must be atleast 6 characters</p>
   }
 </form>
