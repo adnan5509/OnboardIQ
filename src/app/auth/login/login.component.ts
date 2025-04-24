@@ -1,8 +1,19 @@
 import { Component } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { of } from 'rxjs';
 
 function mustBeCompanyEmailAddress(control: AbstractControl) {
   return control.value.includes('accenture') ? null : { notCompanyEmailAddress: true };
+}
+
+function shouldNotMatchPreviousPasswords(control: AbstractControl) {
+  const previousPasswords = [
+    '1234567',
+    '12345678',
+    '123456789',
+    'abcdefg',
+  ];
+  return previousPasswords.includes(control.value) ? of({ matchesPreviousPassword: true }) : of(null);
 }
 
 @Component({
@@ -20,7 +31,7 @@ export class LoginComponent {
     }),
     password: new FormControl('',
       {
-        validators: [Validators.required, Validators.minLength(6)]
+        asyncValidators: [shouldNotMatchPreviousPasswords]
       }
     )
   });
