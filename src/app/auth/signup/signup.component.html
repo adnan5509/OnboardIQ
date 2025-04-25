@@ -25,8 +25,9 @@
     <div class="control">
       <label for="confirm-password">Confirm Password</label>
       <input id="confirm-password" type="password" name="confirm-password" formControlName="confirmPassword" />
-      <div *ngIf="confirmPassword.touched && confirmPassword.invalid" class="control-error">
+      <div *ngIf="confirmPassword.touched && (confirmPassword.invalid || passwordsGroup.invalid)" class="control-error">
         <div *ngIf="confirmPassword.errors?.['required']">Confirm Password is required</div>
+        <div *ngIf="passwordsGroup.errors?.['valuesMismatch']">Passwords do not match</div>
       </div>
     </div>
   </div>

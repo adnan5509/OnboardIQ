@@ -1,8 +1,14 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { first } from 'rxjs';
+import { AbstractControl, FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
+function valuesMismatch(firstControl: string, secondControl: string) {
+  return (control: AbstractControl) => {
+    const firstValue = control.get(firstControl)?.value;
+    const secondValue = control.get(secondControl)?.value;
+    return firstValue === secondValue ? null : { valuesMismatch: true };
+  }
+}
 @Component({
   selector: 'app-signup',
   standalone: true,
@@ -34,7 +40,11 @@ export class SignupComponent {
       confirmPassword: new FormControl('', {
         validators: [Validators.required]
       }),
-    }),
+    },
+      {
+        validators: [valuesMismatch('password', 'confirmPassword')]
+      }
+    ),
     firstName: new FormControl('', {
       validators: [Validators.required]
     }),
@@ -67,6 +77,7 @@ export class SignupComponent {
   })
 
   get email() { return this.signupForm.get('email')!; }
+  get passwordsGroup() { return this.signupForm.get('passwords')!; }
   get password() { return this.signupForm.get('passwords.password')!; }
   get confirmPassword() { return this.signupForm.get('passwords.confirmPassword')!; }
   get firstName() { return this.signupForm.get('firstName')!; }
@@ -91,6 +102,7 @@ export class SignupComponent {
 
   reset() {
     this.signupForm.reset();
+    this.formSubmitted = false;
   }
 
 }
