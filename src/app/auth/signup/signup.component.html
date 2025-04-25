@@ -80,9 +80,6 @@
 
   <fieldset formArrayName="source">
     <legend>How did you find us?</legend>
-
-
-
     <div class="control" *ngFor="let sourceOption of sourceOptions; let i = index">
       <input type="checkbox" [id]="sourceOption.id" name="acquisition" [value]="sourceOption.id"
         [formControlName]="i" />
