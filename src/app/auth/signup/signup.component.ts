@@ -1,4 +1,4 @@
-import { NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { first } from 'rxjs';
@@ -6,12 +6,13 @@ import { first } from 'rxjs';
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [ReactiveFormsModule, NgFor],
+  imports: [ReactiveFormsModule, NgFor, NgIf],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css',
 })
 export class SignupComponent {
 
+  formSubmitted = false;
   sourceOptions = [
     { id: 'google', label: 'Google' },
     { id: 'linkedin', label: 'LinkedIn' },
@@ -21,7 +22,6 @@ export class SignupComponent {
     { id: 'event', label: 'Event / Conference' },
     { id: 'other', label: 'Other' }
   ];
-
 
   signupForm = new FormGroup({
     email: new FormControl('', {
@@ -66,7 +66,22 @@ export class SignupComponent {
     })
   })
 
+  get email() { return this.signupForm.get('email')!; }
+  get password() { return this.signupForm.get('passwords.password')!; }
+  get confirmPassword() { return this.signupForm.get('passwords.confirmPassword')!; }
+  get firstName() { return this.signupForm.get('firstName')!; }
+  get lastName() { return this.signupForm.get('lastName')!; }
+  get street() { return this.signupForm.get('address.street')!; }
+  get number() { return this.signupForm.get('address.number')!; }
+  get postalCode() { return this.signupForm.get('address.postalCode')!; }
+  get city() { return this.signupForm.get('address.city')!; }
+  get role() { return this.signupForm.get('role')!; }
+  get agree() { return this.signupForm.get('agree')!; }
+  get source() { return this.signupForm.get('source') as FormArray; }
+
   onSubmit() {
+    this.formSubmitted = true;
+    this.signupForm.markAllAsTouched();
     if (this.signupForm.invalid) {
       console.log('INVALID FORM')
       return
