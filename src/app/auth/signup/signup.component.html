@@ -19,6 +19,7 @@
       <input id="password" type="password" name="password" formControlName="password" />
       <div *ngIf="password.touched && password.invalid" class="control-error">
         <div *ngIf="password.errors?.['required']">Password is required</div>
+        <div *ngIf="password.errors?.['minlength']">Password should be atleast 6 characters</div>
       </div>
     </div>
 
@@ -131,10 +132,11 @@
         <input type="checkbox" id="terms-and-conditions" name="terms" formControlName="agree" />
         I agree to the terms and conditions
       </label>
-      <div *ngIf="agree.touched && agree.invalid" class="control-error">
-        <small *ngIf="agree.errors?.['requiredTrue']">You must accept the terms</small>
-      </div>
     </div>
+
+  </div>
+  <div *ngIf="agree.touched && agree.invalid" class="control-row control-error">
+    <small *ngIf="agree.errors?.['required']">You must accept the terms</small>
   </div>
 
   <!-- Actions -->

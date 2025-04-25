@@ -72,7 +72,7 @@ export class SignupComponent {
       this.sourceOptions.map(() => new FormControl(false))
     ),
     agree: new FormControl(false, {
-      validators: [Validators.required]
+      validators: [Validators.requiredTrue]
     })
   })
 
@@ -91,13 +91,13 @@ export class SignupComponent {
   get source() { return this.signupForm.get('source') as FormArray; }
 
   onSubmit() {
+    console.log(this.signupForm)
     this.formSubmitted = true;
     this.signupForm.markAllAsTouched();
     if (this.signupForm.invalid) {
       console.log('INVALID FORM')
       return
     }
-    console.log(this.signupForm)
   }
 
   reset() {
