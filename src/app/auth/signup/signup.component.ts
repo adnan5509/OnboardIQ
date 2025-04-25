@@ -65,9 +65,13 @@ export class SignupComponent {
       validators: [Validators.required]
     })
   })
+
   onSubmit() {
-    console.log('Email and Password : ', this.signupForm.controls.email.value, this.signupForm.controls.passwords.controls.password.value);
-    console.log(this.signupForm);
+    if (this.signupForm.invalid) {
+      console.log('INVALID FORM')
+      return
+    }
+    console.log(this.signupForm)
   }
 
   reset() {

@@ -100,4 +100,8 @@
     <button type="button" class="button button-flat" (click)="reset()">Reset</button>
     <button type="submit" class="button">Sign up</button>
   </p>
+
+  @if(signupForm.touched && signupForm.invalid){
+  <p class="control-error">Please enter valid details</p>
+  }
 </form>
